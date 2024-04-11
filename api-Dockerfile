@@ -1,0 +1,41 @@
+FROM python:3.11.5-alpine
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /srv/app
+
+RUN apk add --update make && apk add --no-cache gcc musl-dev libffi-dev && apk add --no-cache rust cargo
+
+RUN addgroup -S user && adduser -S user -G user
+
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY . .
+
+COPY ./data .
+
+RUN chmod 777 -R ./libs/component
+RUN pip install "./libs/component"
+
+RUN chmod 777 -R ./libs/data-model
+RUN pip install "./libs/data-model"
+
+RUN chmod 777 -R ./libs/data-storage
+RUN pip install "./libs/data-storage"
+
+RUN chmod 777 -R ./libs/forensic
+RUN pip install "./libs/forensic"
+
+RUN chmod 777 -R ./libs/service
+RUN pip install "./libs/service"
+
+RUN chmod +x data/environment.sh
+USER user
+
+EXPOSE 58008
+
+ENTRYPOINT [ "data/environment.sh" ]
+CMD ["make", "run_server"]
