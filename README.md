@@ -31,6 +31,7 @@ git clone --depth 1 https://github.com/fuckpiracyshield/data
 git clone --depth 1 https://github.com/fuckpiracyshield/api
 
 mv frontend-Dockerfile frontend/Dockerfile
+mv frontend-nginx.conf frontend/nginx.conf
 
 mv api-Dockerfile api/Dockerfile # yes, replace it
 mv api-environment.sh api/environment.sh
